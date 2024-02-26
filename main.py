@@ -14,15 +14,15 @@ st.markdown('\n\nGeneral Business Info\n\n')
 age_of_biz = st.number_input('Adjusted age of business')
 
 st.markdown('\n\nBanking Data\n\n')
+orig_sales_vol = st.number_input('Sales Volatility in the Last Six Months')
+end_bal_25k = st.number_input('Ending Bal >$25K? (1 = Yes, 2 = No)', value=1)
 total_end_balance_over_outflows = st.number_input("Total Ending Balance/Total Outflows in the Last Six Months")
 six_m_net_cash_flow = st.number_input("Average Net Cash Flow in the Last Six Months")
-six_m_net_cash_flow_ratio = st.number_input("Average Cash Netflow/Inflow Ratio in the Last Six Months")
-end_bal_25k = st.number_input('Ending Bal >$25K? (1 = Yes, 2 = No)', value=1)
 net_cash_trend_3m = st.number_input('Net Cash Flow Trend (recent 3m/oldest 3m)')
 net_cash_trend_2m = st.number_input('Net Cash Flow Trend (recent 2m/oldest 2m)')
+six_m_net_cash_flow_ratio = st.number_input("Average Cash Netflow/Inflow Ratio in the Last Six Months")
 end_bal_trend_3m = st.number_input('Ending Balance Trend (recent 3m/oldest 3m)')
 end_bal_trend_2m = st.number_input('Ending Balance Trend (recent 2m/oldest 2m)')
-orig_sales_vol = st.number_input('Sales Volatility in the Last Six Months')
 sales_inflow_3m = st.number_input('Sales Inflow Trend (recent 3m/oldest 3m)')
 sales_inflow_2m = st.number_input('Sales Inflow Trend (recent 2m/oldest 2m)')
 adj_sales_vol_3m = st.number_input('Adjusted Sales Volatility (recent 3m/oldest 3m)')
@@ -39,15 +39,15 @@ if st.button('Calculate'):
     # Collect input data
     data = [
         age_of_biz
+        , orig_sales_vol
+        , end_bal_25k
         , total_end_balance_over_outflows
         , six_m_net_cash_flow
-        , six_m_net_cash_flow_ratio
-        , end_bal_25k
         , net_cash_trend_3m
         , net_cash_trend_2m
+        , six_m_net_cash_flow_ratio
         , end_bal_trend_3m
         , end_bal_trend_2m
-        , orig_sales_vol
         , sales_inflow_3m
         , sales_inflow_2m
         , adj_sales_vol_3m
