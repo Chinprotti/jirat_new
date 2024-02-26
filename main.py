@@ -15,7 +15,7 @@ age_of_biz = st.number_input('Adjusted age of business')
 
 st.markdown('\n\nBanking Data\n\n')
 orig_sales_vol = st.number_input('Sales Volatility in the Last Six Months')
-end_bal_25k = st.number_input('Ending Bal >$25K? (1 = Yes, 2 = No)', value=1)
+end_bal_25k = st.number_input('Ending Bal >$25K?', value=1)
 total_end_balance_over_outflows = st.number_input("Total Ending Balance/Total Outflows in the Last Six Months")
 six_m_net_cash_flow = st.number_input("Average Net Cash Flow in the Last Six Months")
 net_cash_trend_3m = st.number_input('Net Cash Flow Trend (recent 3m/oldest 3m)')
