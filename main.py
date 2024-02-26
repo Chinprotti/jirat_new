@@ -3,6 +3,11 @@ import streamlit as st
 import pickle
 import requests
 
+
+model_filename = '/models/v3_pipeline.pkl'
+with open(model_filename, 'rb') as f:
+    pipeline = pickle.load(f)
+
 st.title('V3 Model Scoring')
 st.markdown('Minimum viable product for utilizing the V3 Underwriting Model')
 
@@ -56,13 +61,33 @@ if st.button('Calculate'):
         , num_active_lines
     ]
 
+    input_data = pd.DataFrame([data]
+                              , columns=[
+            'Adjusted_age_of_business'
+            , 'Original_Sales_Volatility'
+            , 'Ending_Bal._>$25K?'
+            , 'Total_ending_balance/Outflows'
+            , 'Average_Net_Cash_Flow'
+            , 'Net_Cash_Flow_(3m)'
+            , 'Net_Cash_flow_(2m)'
+            , 'Average_Cash_netflow/Inflow_Ratio'
+            , 'Ending_Balance_(3m)'
+            , 'Ending_Balance_(2m)'
+            , 'Sales_Inflow_Trend_(3m/old_3m)'
+            , 'Sales_Inflow_Trend_(2m/old_2m)'
+            , 'Adjusted_Sales_Volatility_(3m)'
+            , 'Adjusted_Sales_Volatility_(2m)'
+            , 'Number_of_inquiries_(Credit_Bureau)'
+            , 'Number_of_tradelines_where_customer_went_30+_days_past_due_(Credit_Bureau)'
+            , 'Number_of_fully_repaid_tradelines_(Credit_Bureau)'
+            , 'Number_of_active_tradelines_(Credit_Bureau)'
+            ])
 
+    transformed_data = pipeline.transform(input_data)
+
+    prediction = transformed_data[0]
     
-    st.info(f"""Calculation Complete\n\n
-    Adjusted Age of Business: {age_of_biz}
-    Six Month Net Cash Flow: {six_m_net_cash_flow}
-    Ending Balance Over 25k: {end_bal_25k}
-    """)
+    st.info(f"Calculated Score: {prediction:.2f}")
 
     # if response.status_code == 200:
     #     result = response.json()["result"]
