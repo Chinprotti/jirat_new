@@ -1,12 +1,10 @@
 import pandas as pd
 import streamlit as st
-import pickle
+import joblib
+import sklearn
 import requests
 
-
-model_filename = '/models/v3_pipeline.pkl'
-with open(model_filename, 'rb') as f:
-    pipeline = pickle.load(f)
+pipeline = joblib.load('models/v3_pipeline.pkl')
 
 st.title('V3 Model Scoring')
 st.markdown('Minimum viable product for utilizing the V3 Underwriting Model')
@@ -15,13 +13,11 @@ st.markdown('Minimum viable product for utilizing the V3 Underwriting Model')
 st.markdown('\n\nGeneral Business Info\n\n')
 age_of_biz = st.number_input('Adjusted age of business')
 
-#This is a new branch as an example
-
 st.markdown('\n\nBanking Data\n\n')
 total_end_balance_over_outflows = st.number_input("Total Ending Balance/Total Outflows in the Last Six Months")
 six_m_net_cash_flow = st.number_input("Average Net Cash Flow in the Last Six Months")
 six_m_net_cash_flow_ratio = st.number_input("Average Cash Netflow/Inflow Ratio in the Last Six Months")
-end_bal_25k = st.number_input('Ending Bal. >$25K?')
+end_bal_25k = st.number_input('Ending Bal >$25K? (1 = Yes, 2 = No)', value=1)
 net_cash_trend_3m = st.number_input('Net Cash Flow Trend (recent 3m/oldest 3m)')
 net_cash_trend_2m = st.number_input('Net Cash Flow Trend (recent 2m/oldest 2m)')
 end_bal_trend_3m = st.number_input('Ending Balance Trend (recent 3m/oldest 3m)')
@@ -38,6 +34,7 @@ num_30_plus_lines = st.number_input('Number of 30+ days past due tradelines in L
 num_repaid_lines = st.number_input('Number of Fully Repaid Tradelines')
 num_active_lines = st.number_input('Number of Active Tradelines')
 
+#button handling
 if st.button('Calculate'):
     # Collect input data
     data = [
@@ -83,14 +80,6 @@ if st.button('Calculate'):
             , 'Number_of_active_tradelines_(Credit_Bureau)'
             ])
 
-    transformed_data = pipeline.transform(input_data)
-
-    prediction = transformed_data[0]
+    prediction = pipeline.predict_proba(input_data)[0][1]
     
-    st.info(f"Calculated Score: {prediction:.2f}")
-
-    # if response.status_code == 200:
-    #     result = response.json()["result"]
-    #     st.success(f"Calculated Result: {result}")
-    # else:
-    #     st.error("Calculation failed")
+    st.info(f'V3 Score: {prediction}')
