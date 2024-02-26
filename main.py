@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import pickle
 import requests
 
 st.title('V3 Model Scoring')
@@ -54,6 +55,8 @@ if st.button('Calculate'):
         , num_repaid_lines
         , num_active_lines
     ]
+
+
     
     st.info(f"""Calculation Complete\n\n
     Adjusted Age of Business: {age_of_biz}
