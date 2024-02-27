@@ -6,6 +6,7 @@ import sklearn
 import requests
 
 pipeline = joblib.load('models/v3_pipeline.pkl')
+imputer = joblib.load('models/imputer.pkl')
 
 st.title('V3 Model Scoring')
 st.markdown('Minimum viable product for utilizing the V3 Underwriting Model')
@@ -82,6 +83,7 @@ if st.button('Calculate'):
             , 'Number_of_active_tradelines_(Credit_Bureau)'
             ])
     input_data.replace(-np.inf, -4, inplace=True)
-    prediction = pipeline.predict_proba(input_data)[0][1]
-    
+    imputed_input_data = imputer.transform(input_data)
+    prediction = pipeline.predict_proba(imputed_input_data)[0][1]
+    # st.dataframe(input_data)
     st.info(f'V3 Score: {prediction}')
