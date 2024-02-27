@@ -85,5 +85,5 @@ if st.button('Calculate'):
     input_data.replace(-np.inf, -4, inplace=True)
     imputed_input_data = imputer.transform(input_data)
     prediction = pipeline.predict_proba(imputed_input_data)[0][1]
-    # st.dataframe(input_data)
-    st.info(f'V3 Score: {prediction}')
+    st.dataframe(input_data)
+    # st.info(f'V3 Score: {prediction}')
