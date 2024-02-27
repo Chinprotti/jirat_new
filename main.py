@@ -82,6 +82,6 @@ if st.button('Calculate'):
             , 'Number_of_active_tradelines_(Credit_Bureau)'
             ])
 
-    prediction = pipeline.predict_proba(input_data.replace(-np.inf, -4, inplace=True))[0][1]
+    prediction = pipeline.predict_proba(input_data)[0][1]
     
     st.info(f'V3 Score: {prediction}')
