@@ -9,9 +9,8 @@ pipeline = joblib.load('models/pipeline_42.pkl')
 imputer = joblib.load('models/imputer_3m.pkl')
 
 st.title('V3 Model Scoring')
-st.markdown('Minimum viable product for utilizing the V3 Underwriting Model')
+st.markdown('Minimum viable product for utilizing the V3 Underwriting Model\n\n')
 
-#18 V3 Model Inputs
 st.markdown('\n\nGeneral Business Info\n\n')
 age_of_biz = st.number_input('Age of business')
 
@@ -65,9 +64,6 @@ if st.button('Calculate'):
         ,orig_sales_vol        
     ]
     
-    age_of_biz = np.log10(age_of_biz)
-    age_of_biz = np.where(np.isinf(age_of_biz), -4, age_of_biz)
-
     input_data = pd.DataFrame([data]
                               , columns=[
             'Sum of Ending Balance Trend'
@@ -91,8 +87,8 @@ if st.button('Calculate'):
             , 'Age of business'
             , 'Original Sales Volatility'
             ])
-   
-
+    input_data['Age of business'] = np.log10(input_data['Age of business'])
+    input_data.replace(-np.inf, -4, inplace=True)
     
     imputed_input_data = imputer.transform(input_data)
     prediction = pipeline.predict_proba(imputed_input_data)[0][1]
