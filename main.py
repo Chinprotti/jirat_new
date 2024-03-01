@@ -5,7 +5,7 @@ import joblib
 import sklearn
 import requests
 
-pipeline = joblib.load('models/pipeline_42.pkl')
+pipeline = joblib.load('models/pipeline_19.pkl')
 imputer = joblib.load('models/imputer_3m.pkl')
 
 st.title('V3 Model Scoring')
