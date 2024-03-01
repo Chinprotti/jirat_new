@@ -5,85 +5,99 @@ import joblib
 import sklearn
 import requests
 
-pipeline = joblib.load('models/v3_pipeline.pkl')
-imputer = joblib.load('models/imputer.pkl')
+pipeline = joblib.load('models/pipeline_42.pkl')
+imputer = joblib.load('models/imputer_3m.pkl')
 
 st.title('V3 Model Scoring')
 st.markdown('Minimum viable product for utilizing the V3 Underwriting Model')
 
 #18 V3 Model Inputs
 st.markdown('\n\nGeneral Business Info\n\n')
-age_of_biz = st.number_input('Adjusted age of business')
+age_of_biz = st.number_input('Age of business')
 
 st.markdown('\n\nBanking Data\n\n')
-orig_sales_vol = st.number_input('Sales Volatility in the Last Six Months')
-end_bal_25k = st.number_input('Ending Bal >$25K?', value=1)
-total_end_balance_over_outflows = st.number_input("Total Ending Balance/Total Outflows in the Last Six Months")
-six_m_net_cash_flow = st.number_input("Average Net Cash Flow in the Last Six Months")
-net_cash_trend_3m = st.number_input('Net Cash Flow Trend (recent 3m/oldest 3m)')
-net_cash_trend_2m = st.number_input('Net Cash Flow Trend (recent 2m/oldest 2m)')
-six_m_net_cash_flow_ratio = st.number_input("Average Cash Netflow/Inflow Ratio in the Last Six Months")
-end_bal_trend_3m = st.number_input('Ending Balance Trend (recent 3m/oldest 3m)')
-end_bal_trend_2m = st.number_input('Ending Balance Trend (recent 2m/oldest 2m)')
-sales_inflow_3m = st.number_input('Sales Inflow Trend (recent 3m/oldest 3m)')
-sales_inflow_2m = st.number_input('Sales Inflow Trend (recent 2m/oldest 2m)')
-adj_sales_vol_3m = st.number_input('Adjusted Sales Volatility (recent 3m/oldest 3m)')
-adj_sales_vol_2m = st.number_input('Adjusted Sales Volatility (recent 2m/oldest 2m)')
+sum_ending_bal_trend = st.number_input('Sum of Ending Balance Trend')
+avg_sales_inflow_trend = st.number_input('Average Sales Inflow Trend')
+ending_bal_3m_2m_trend = st.number_input('Ending Balance (3m_2m)')
+net_cash_flow_2m_1m_trend = st.number_input('Net Cash Flow (2m_1m)')
+sum_sales_inflow_trend = st.number_input('Sum Sales Inflow Trend')
+ending_bal_2m_1m_trend = st.number_input('Ending Balance (2m_1m)')
+avg_ending_bal_trend = st.number_input('Avg Ending Balance Trend')
+net_cash_flow_3m_2m_trend = st.number_input('Net Cash Flow (3m_2m)')
+avg_net_cash_flow_trend = st.number_input('Avg Net Cash Flow Trend')
+sales_inflow_3m_2m_trend = st.number_input('Sales Inflow Trend (3m_2m)')
+sales_inflow_2m_1m_trend = st.number_input('Sales Inflow Trend (2m_1m)')
+total_end_balance_over_outflows = st.number_input('Total ending balance/Outflows')
+six_m_net_cash_flow_ratio = st.number_input('Average Cash netflow/Inflow Ratio')
+adj_sales_volatility = st.number_input('Adjusted Sales Volatility')
+orig_sales_vol = st.number_input('Original Sales Volatility')
+
 
 st.markdown('\n\nCredit Bureau Data\n\n')
-num_inquiries = st.number_input('Number of Inquiries in the Last Six Months')
-num_30_plus_lines = st.number_input('Number of 30+ days past due tradelines in Last Six Months')
-num_repaid_lines = st.number_input('Number of Fully Repaid Tradelines')
-num_active_lines = st.number_input('Number of Active Tradelines')
+num_inquiries = st.number_input('CB Number of inquiries')
+num_30_plus_lines = st.number_input('CB Number of tradelines where customer went 30+ days past due')
+num_repaid_lines = st.number_input('CB Number of fully repaid tradelines')
+num_active_lines = st.number_input('CB Number of active tradelines')
 
 #button handling
 if st.button('Calculate'):
     # Collect input data
     data = [
-        age_of_biz
-        , orig_sales_vol
-        , end_bal_25k
-        , total_end_balance_over_outflows
-        , six_m_net_cash_flow
-        , net_cash_trend_3m
-        , net_cash_trend_2m
-        , six_m_net_cash_flow_ratio
-        , end_bal_trend_3m
-        , end_bal_trend_2m
-        , sales_inflow_3m
-        , sales_inflow_2m
-        , adj_sales_vol_3m
-        , adj_sales_vol_2m
-        , num_inquiries
-        , num_30_plus_lines
-        , num_repaid_lines
-        , num_active_lines
+        sum_ending_bal_trend
+        ,avg_sales_inflow_trend
+        ,num_active_lines
+        ,ending_bal_3m_2m_trend
+        ,num_repaid_lines
+        ,net_cash_flow_2m_1m_trend
+        ,sum_sales_inflow_trend
+        ,ending_bal_2m_1m_trend
+        ,avg_ending_bal_trend
+        ,net_cash_flow_3m_2m_trend
+        ,num_inquiries
+        ,avg_net_cash_flow_trend
+        ,num_30_plus_lines
+        ,sales_inflow_3m_2m_trend
+        ,sales_inflow_2m_1m_trend
+        ,total_end_balance_over_outflows
+        ,six_m_net_cash_flow_ratio
+        ,adj_sales_volatility
+        ,age_of_biz
+        ,orig_sales_vol        
     ]
-    data = np.log10(data)
+    
+    age_of_biz = np.log10(age_of_biz)
+    age_of_biz = np.where(np.isinf(age_of_biz), -4, age_of_biz)
 
     input_data = pd.DataFrame([data]
                               , columns=[
-            'Adjusted_age_of_business'
-            , 'Original_Sales_Volatility'
-            , 'Ending_Bal._>$25K?'
-            , 'Total_ending_balance/Outflows'
-            , 'Average_Net_Cash_Flow'
-            , 'Net_Cash_Flow_(3m)'
-            , 'Net_Cash_flow_(2m)'
-            , 'Average_Cash_netflow/Inflow_Ratio'
-            , 'Ending_Balance_(3m)'
-            , 'Ending_Balance_(2m)'
-            , 'Sales_Inflow_Trend_(3m/old_3m)'
-            , 'Sales_Inflow_Trend_(2m/old_2m)'
-            , 'Adjusted_Sales_Volatility_(3m)'
-            , 'Adjusted_Sales_Volatility_(2m)'
-            , 'Number_of_inquiries_(Credit_Bureau)'
-            , 'Number_of_tradelines_where_customer_went_30+_days_past_due_(Credit_Bureau)'
-            , 'Number_of_fully_repaid_tradelines_(Credit_Bureau)'
-            , 'Number_of_active_tradelines_(Credit_Bureau)'
+            'Sum of Ending Balance Trend'
+            , 'Average Sales Inflow Trend'
+            , 'CB Number of active tradelines'
+            , 'Ending Balance (3m_2m)'
+            , 'CB Number of fully repaid tradelines'
+            , 'Net Cash Flow (2m_1m)'
+            , 'Sum Sales Inflow Trend'
+            , 'Ending Balance (2m_1m)'
+            , 'Avg Ending Balance Trend'
+            , 'Net Cash Flow (3m_2m)'
+            , 'CB Number of inquiries'
+            , 'Avg Net Cash Flow Trend'
+            , 'CB Number of tradelines where customer went 30+ days past due'
+            , 'Sales Inflow Trend (3m_2m)'
+            , 'Sales Inflow Trend (2m_1m)'
+            , 'Total ending balance/Outflows'
+            , 'Average Cash netflow/Inflow Ratio'
+            , 'Adjusted Sales Volatility'
+            , 'Age of business'
+            , 'Original Sales Volatility'
             ])
-    input_data.replace(-np.inf, -4, inplace=True)
+   
+
+    
     imputed_input_data = imputer.transform(input_data)
     prediction = pipeline.predict_proba(imputed_input_data)[0][1]
-    st.dataframe(imputed_input_data)
-    # st.info(f'V3 Score: {prediction}')
+    # st.dataframe(imputed_input_data)
+    st.info(f'V3 Score: {prediction}')
+
+    
+
