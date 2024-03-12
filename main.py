@@ -87,13 +87,14 @@ if st.button('Calculate'):
             , 'Age of business'
             , 'Original Sales Volatility'
             ])
+    
+    input_data_sum = input_data.sum().sum()
     input_data['Age of business'] = np.log10(input_data['Age of business'])
     input_data.replace(-np.inf, -4, inplace=True)
     
     imputed_input_data = imputer.transform(input_data)
     prediction = pipeline.predict_proba(imputed_input_data)[0][1]
     # st.dataframe(imputed_input_data)
+    st.info(f'Sum of input data: {input_data_sum}')
     st.info(f'V3 Score: {prediction}')
-
-    
 
