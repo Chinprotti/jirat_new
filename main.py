@@ -9,7 +9,7 @@ import requests
 pipeline = joblib.load('models/pipeline_19.pkl')
 imputer = joblib.load('models/imputer_3m.pkl')
 
-import pages.database  # Import the 'database' page
+import pages.db  # Import the 'database' page
 import pages.v3_model  # Import the 'v3_model' page
 
 # Sidebar Navigation
