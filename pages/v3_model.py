@@ -91,6 +91,7 @@ input_data = pd.DataFrame([data], columns=[
         , 'Original Sales Volatility'
         ])
 
+input_data_sum = input_data.sum().sum()
 input_data['Age of business'] = np.log10(input_data['Age of business'])
 input_data.replace(-np.inf, -4, inplace=True)
 
@@ -135,6 +136,8 @@ if st.button('Calculate'):
         company_name
         , int(company_id)
         , float(prediction)
+        , float(input_data_sum)
     )
     db.execute_sql_from_file(sql_file_path, data_tuple)
+    st.info(f'Sum of input data: {input_data_sum}')
     st.info(f'V3 Score: {prediction}')
