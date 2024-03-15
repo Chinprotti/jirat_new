@@ -8,4 +8,4 @@ requests
 streamlit
 st-pages
 psycopg2-binary
-yaml
+pyyaml
