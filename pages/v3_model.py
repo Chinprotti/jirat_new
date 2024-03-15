@@ -4,6 +4,9 @@ import numpy as np
 import joblib
 import db
 import sklearn
+from st_pages import show_pages_from_config
+
+show_pages_from_config()
 
 pipeline = joblib.load('models/pipeline_19.pkl')
 imputer = joblib.load('models/imputer_3m.pkl')
