@@ -7,5 +7,5 @@ scikit-learn
 requests
 streamlit
 st-pages
-psycopg2
+psycopg2-binary
 yaml
