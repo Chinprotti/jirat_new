@@ -6,3 +6,5 @@ scikit-learn
 requests
 streamlit
 st-pages
+psycopg2
+yaml
