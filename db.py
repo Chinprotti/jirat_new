@@ -11,7 +11,7 @@ def connect_to_cockroach():
     try:
         conn = psycopg2.connect(
             cockroach_url
-            , sslmode='disable'
+            , sslrootcert='cert/root.crt'
         )
         
         st.success("Connection Successful!")
