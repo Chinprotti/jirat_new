@@ -11,7 +11,9 @@ def connect_to_cockroach():
     try:
         conn = psycopg2.connect(
             cockroach_url
+            , sslmode='disable'
         )
+        
         st.success("Connection Successful!")
         return conn
     except (Exception, psycopg2.Error) as error:
