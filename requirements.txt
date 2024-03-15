@@ -5,3 +5,4 @@ joblib
 scikit-learn
 requests
 streamlit
+st-pages
