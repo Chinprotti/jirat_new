@@ -1,4 +1,3 @@
-import pandas as pd
 import streamlit as st
 import numpy as np
 import joblib
@@ -9,11 +8,7 @@ pipeline = joblib.load('models/pipeline_19.pkl')
 imputer = joblib.load('models/imputer_3m.pkl')
 
 st.title('V3 Model Scoring')
-st.markdown('Enter Inputs Below\n\n')
-
-st.text_input('Company Name')
-st.text_input('Jeeves Company ID')
-st.markdown('\n\n')
+st.markdown('Minimum viable product for utilizing the V3 Underwriting Model\n\n')
 
 st.markdown('\n\nGeneral Business Info\n\n')
 age_of_biz = st.number_input('Age of business')

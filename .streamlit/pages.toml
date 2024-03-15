@@ -1,0 +1,7 @@
+[[pages]]
+path = "main.py"
+name = "Home"
+
+[[pages]]
+path = "pages/v3_model.py"
+name = "V3 Model Runner"
