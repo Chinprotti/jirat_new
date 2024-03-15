@@ -1,6 +1,6 @@
 xgboost
 numpy
-postgresql
+postgres
 pandas
 joblib
 scikit-learn
