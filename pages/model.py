@@ -55,6 +55,7 @@ data = [
     , cb_num_inquiries
 ]
 
+st.info(sum(data))
 
 
 #button handling
