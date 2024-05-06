@@ -3,6 +3,7 @@ import streamlit as st
 import joblib
 import db
 from st_pages import show_pages_from_config
+import cleaner
 
 show_pages_from_config()
 
@@ -34,79 +35,65 @@ month_3_net_cash_flow = st.number_input('Month 3 Net Cash Flow')
 
 st.markdown('\n\nCredit Bureau Data\n\n')
 cb_num_active_lines = st.number_input('CB Number of active tradelines')
-cb_num_inquiries = st.number_input('CB Number of active tradelines')
+cb_num_inquiries = st.number_input('CB Number of Inquiries L12M')
 
 data = [
     age_of_biz
-    , latest_end_bal
-    , min_outflow
-    , num_active_lines
-    , avg_bal_outflows_cb_inquiries_l12m
-    , inflows_active_trades
-    , min_end_bal_outflow_vol
-    , min_end_bal
-    , outflows_burden
-    , cash_reserve
-    , inflows_max_outflow
-    , avg_outflows_min_outflow
-    , avg_end_bal
-    , max_cash_change
-    , avg_bal_outflows
-    , max_outflow
-    , net_cash_vol
-    , outflows_burden_neg_net_cash_count       
+    , month_1_inflow
+    , month_2_inflow
+    , month_3_inflow
+    , month_1_outflow
+    , month_2_outflow
+    , month_3_outflow
+    , month_1_end_balance
+    , month_2_end_balance
+    , month_3_end_balance
+    , month_1_net_cash_flow
+    , month_2_net_cash_flow
+    , month_3_net_cash_flow
+    , cb_num_active_lines
+    , cb_num_inquiries
 ]
 
-input_data = pd.DataFrame([data], columns=[
-        'age_of_biz'
-        , '-1_end_bal'
-        , 'min_outflow'
-        , 'cb_trades_active'
-        , 'avg_bal/outflows*cb_inquiries_l12m'
-        , 'inflows/active_trades'
-        , 'min_end_bal*outflow_vol'
-        , 'min_end_bal'
-        , 'outflows_burden'
-        , 'cash_reserve'
-        , 'inflows/max_outflow'
-        , 'avg_outflows*min_outflow'
-        , 'avg_end_bal'
-        , 'max_cash_change'
-        , 'avg_bal/outflows'
-        , 'max_outflow'
-        , 'net_cash_vol'
-        , 'outflows_burden*neg_net_cash_count'
-        ])
+
 
 #button handling
 if st.button('Calculate'):
+    data = pd.DataFrame(data).T
+    data = data.rename(columns={
+                            0: 'age_of_biz', 1: '1_inflow' , 2: '-2_inflow', 3: '-3_inflow'
+                            , 4: '-1_outflow', 5: '-2_outflow', 6: '-3_outflow'
+                            , 7: '-1_end_bal', 8: '-2_end_bal', 9: '-3_end_bal'
+                            , 10: '-1_net_cash', 11: '-2_net_cash', 12: '-3_net_cash'
+                            , 13: 'cb_trades_active', 14: 'cb_inquiries_l12m'})
+    input_data = cleaner.clean_input(data)
 
     data_tuple = (
                 company_name
                 , int(company_id)
-                , age_of_biz
-                , latest_end_bal
-                , min_outflow
-                , int(num_active_lines)
-                , avg_bal_outflows_cb_inquiries_l12m
-                , inflows_active_trades
-                , min_end_bal_outflow_vol
-                , min_end_bal
-                , outflows_burden
-                , cash_reserve
-                , inflows_max_outflow
-                , avg_outflows_min_outflow
-                , avg_end_bal
-                , max_cash_change
-                , avg_bal_outflows
-                , max_outflow
-                , net_cash_vol
-                , outflows_burden_neg_net_cash_count 
+                , input_data.age_of_biz
+                , input_data['-1_end_bal']
+                , input_data['min_outflow']
+                , input_data['cb_trades_active']
+                , input_data['avg_bal/outflows*cb_inquiries_l12m']
+                , input_data['inflows/active_trades']
+                , input_data['min_end_bal*outflow_vol']
+                , input_data['min_end_bal']
+                , input_data['outflows_burden']
+                , input_data['cash_reserve']
+                , input_data['inflows/max_outflow']
+                , input_data['avg_outflows*min_outflow']
+                , input_data['avg_end_bal']
+                , input_data['max_cash_change']
+                , input_data['avg_bal/outflows']
+                , input_data['max_outflow']
+                , input_data['net_cash_vol']
+                , input_data['outflows_burden*neg_net_cash_count']
                 )
     
-    sql_file_path = 'sql/insert_model_inputs.sql'
+    # sql_file_path = 'sql/insert_model_inputs.sql'
     # st.info(data_tuple)
-    db.execute_sql_from_file(sql_file_path, data_tuple)
+    # db.execute_sql_from_file(sql_file_path, data_tuple)
     # db.connect_to_cockroach()
 
     prediction = model.predict_proba(input_data)[0][1]
