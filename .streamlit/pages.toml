@@ -3,5 +3,5 @@ path = "main.py"
 name = "Home"
 
 [[pages]]
-path = "pages/v3_model.py"
+path = "pages/model.py"
 name = "V3 Model Runner"

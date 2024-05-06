@@ -1,13 +1,12 @@
 import pandas as pd
 import streamlit as st
-import numpy as np
 import joblib
 import db
 from st_pages import show_pages_from_config
 
 show_pages_from_config()
 
-pipeline = joblib.load('models/new_v3_risk_modelinit_uw-20240501.pkl')
+model = joblib.load('models/init_uw-20240501.pkl')
 
 st.title('V3 Model Scoring')
 st.markdown('Enter Inputs Below\n\n')
@@ -22,9 +21,9 @@ age_of_biz = st.number_input('Age of business')
 st.markdown('\n\nBanking Data\n\n')
 outflows_burden = st.number_input('Outflows Burden')
 cash_reserve = st.number_input('Cash Reserve')
-inflows_active_trades = st.number('Average Inflows / CB Active Tradelines')
-net_cash_vol = st.number('Net Cash Flow Volatility')
-avg_bal_outflows_cb_inquiries_l12m = st.number('(Avg Ending Balance / Outflows) / CB Recent Inquiries')
+inflows_active_trades = st.number_input('Average Inflows / CB Active Tradelines')
+net_cash_vol = st.number_input('Net Cash Flow Volatility')
+avg_bal_outflows_cb_inquiries_l12m = st.number_input('(Avg Ending Balance / Outflows) / CB Recent Inquiries')
 max_outflow = st.number_input('Max Outflow')
 min_outflow = st.number_input('Min Outflow')
 max_cash_change = st.number_input('Max Cash Change')
@@ -42,23 +41,23 @@ num_active_lines = st.number_input('CB Number of active tradelines')
 
 data = [
     age_of_biz
-    ,latest_end_bal
-    ,min_outflow
-    ,num_active_lines
-    ,avg_bal_outflows_cb_inquiries_l12m
-    ,inflows_active_trades
-    ,min_end_bal_outflow_vol
-    ,min_end_bal
-    ,outflows_burden
-    ,cash_reserve
-    ,inflows_max_outflow
-    ,avg_outflows_min_outflow
-    ,avg_end_bal
-    ,max_cash_change
-    ,avg_bal_outflows
-    ,max_outflow
-    ,net_cash_vol
-    ,outflows_burden_neg_net_cash_count       
+    , latest_end_bal
+    , min_outflow
+    , num_active_lines
+    , avg_bal_outflows_cb_inquiries_l12m
+    , inflows_active_trades
+    , min_end_bal_outflow_vol
+    , min_end_bal
+    , outflows_burden
+    , cash_reserve
+    , inflows_max_outflow
+    , avg_outflows_min_outflow
+    , avg_end_bal
+    , max_cash_change
+    , avg_bal_outflows
+    , max_outflow
+    , net_cash_vol
+    , outflows_burden_neg_net_cash_count       
 ]
 
 input_data = pd.DataFrame([data], columns=[
@@ -82,8 +81,6 @@ input_data = pd.DataFrame([data], columns=[
         , 'outflows_burden*neg_net_cash_count'
         ])
 
-input_data_sum = input_data.sum().sum()
-
 #button handling
 if st.button('Calculate'):
 
@@ -91,23 +88,23 @@ if st.button('Calculate'):
                 company_name
                 , int(company_id)
                 , age_of_biz
-                ,latest_end_bal
-                ,min_outflow
-                ,int(num_active_lines)
-                ,avg_bal_outflows_cb_inquiries_l12m
-                ,inflows_active_trades
-                ,min_end_bal_outflow_vol
-                ,min_end_bal
-                ,outflows_burden
-                ,cash_reserve
-                ,inflows_max_outflow
-                ,avg_outflows_min_outflow
-                ,avg_end_bal
-                ,max_cash_change
-                ,avg_bal_outflows
-                ,max_outflow
-                ,net_cash_vol
-                ,outflows_burden_neg_net_cash_count 
+                , latest_end_bal
+                , min_outflow
+                , int(num_active_lines)
+                , avg_bal_outflows_cb_inquiries_l12m
+                , inflows_active_trades
+                , min_end_bal_outflow_vol
+                , min_end_bal
+                , outflows_burden
+                , cash_reserve
+                , inflows_max_outflow
+                , avg_outflows_min_outflow
+                , avg_end_bal
+                , max_cash_change
+                , avg_bal_outflows
+                , max_outflow
+                , net_cash_vol
+                , outflows_burden_neg_net_cash_count 
                 )
     
     sql_file_path = 'sql/insert_model_inputs.sql'
@@ -115,18 +112,16 @@ if st.button('Calculate'):
     db.execute_sql_from_file(sql_file_path, data_tuple)
     # db.connect_to_cockroach()
 
-  
-    prediction = pipeline.predict_proba(imputed_input_data)[0][1]
+    prediction = model.predict_proba(input_data)[0][1]
     
-    sql_file_path = 'sql/insert_model_scores.sql'
-    data_tuple = (
-        company_name
-        , int(company_id)
-        , float(prediction)
+    # sql_file_path = 'sql/insert_model_scores.sql'
+    # data_tuple = (
+    #     company_name
+    #     , int(company_id)
+    #     , float(prediction)
         
-    )
-    db.execute_sql_from_file(sql_file_path, data_tuple)
-    st.info(f'Sum of input data checkpoint: {input_data_sum}')
+    # )
+    # db.execute_sql_from_file(sql_file_path, data_tuple)
     st.info(f'V3 Score: {prediction}')
 
     #Add waterfall chart? 
