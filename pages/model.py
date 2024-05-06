@@ -60,14 +60,12 @@ data = [
 #button handling
 if st.button('Calculate'):
     data = pd.DataFrame(data).T
-    st.dataframe(data)
     data = data.rename(columns={
                             0: 'age_of_biz', 1: '-1_inflow' , 2: '-2_inflow', 3: '-3_inflow'
                             , 4: '-1_outflow', 5: '-2_outflow', 6: '-3_outflow'
                             , 7: '-1_end_bal', 8: '-2_end_bal', 9: '-3_end_bal'
                             , 10: '-1_net_cash', 11: '-2_net_cash', 12: '-3_net_cash'
                             , 13: 'cb_trades_active', 14: 'cb_inquiries_l12m'})
-    st.dataframe(data)
     input_data = cleaner.clean_input(data)
 
     data_tuple = (
@@ -92,14 +90,12 @@ if st.button('Calculate'):
                 , input_data['net_cash_vol']
                 , input_data['outflows_burden*neg_net_cash_count']
                 )
-    # st.dataframe(data)
-    st.dataframe(input_data)
     # sql_file_path = 'sql/insert_model_inputs.sql'
     # st.info(data_tuple)
     # db.execute_sql_from_file(sql_file_path, data_tuple)
     # db.connect_to_cockroach()
 
-    # prediction = model.predict_proba(input_data)[0][1]
+    prediction = model.predict_proba(input_data)[0][1]
     
     # sql_file_path = 'sql/insert_model_scores.sql'
     # data_tuple = (
@@ -109,6 +105,6 @@ if st.button('Calculate'):
         
     # )
     # db.execute_sql_from_file(sql_file_path, data_tuple)
-    # st.info(f'V3 Score: {prediction}')
+    st.info(f'V3 Score: {prediction}')
 
     #Add waterfall chart? 
