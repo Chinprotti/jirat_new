@@ -34,24 +34,27 @@ month_3_net_cash_flow = st.number_input('Month 3 Net Cash Flow')
 
 st.markdown('\n\nCredit Bureau Data\n\n')
 cb_num_active_lines = st.number_input('CB Number of active tradelines')
-cb_num_inquiries = st.number_input('CB Number of Inquiries')
+cb_num_inquiries = st.number_input('CB Number of active tradelines')
 
 data = [
     age_of_biz
-    , month_1_inflow
-    , month_2_inflow
-    , month_3_inflow
-    , month_1_outflow
-    , month_2_outflow
-    , month_3_outflow
-    , month_1_end_balance
-    , month_2_end_balance
-    , month_3_end_balance
-    , month_1_net_cash_flow
-    , month_2_net_cash_flow
-    , month_3_net_cash_flow
-    , cb_num_active_lines
-    , cb_num_inquiries     
+    , latest_end_bal
+    , min_outflow
+    , num_active_lines
+    , avg_bal_outflows_cb_inquiries_l12m
+    , inflows_active_trades
+    , min_end_bal_outflow_vol
+    , min_end_bal
+    , outflows_burden
+    , cash_reserve
+    , inflows_max_outflow
+    , avg_outflows_min_outflow
+    , avg_end_bal
+    , max_cash_change
+    , avg_bal_outflows
+    , max_outflow
+    , net_cash_vol
+    , outflows_burden_neg_net_cash_count       
 ]
 
 input_data = pd.DataFrame([data], columns=[
@@ -82,20 +85,23 @@ if st.button('Calculate'):
                 company_name
                 , int(company_id)
                 , age_of_biz
-                , month_1_inflow
-                , month_2_inflow
-                , month_3_inflow
-                , month_1_outflow
-                , month_2_outflow
-                , month_3_outflow
-                , month_1_end_balance
-                , month_2_end_balance
-                , month_3_end_balance
-                , month_1_net_cash_flow
-                , month_2_net_cash_flow
-                , month_3_net_cash_flow
-                , cb_num_active_lines
-                , cb_num_inquiries   
+                , latest_end_bal
+                , min_outflow
+                , int(num_active_lines)
+                , avg_bal_outflows_cb_inquiries_l12m
+                , inflows_active_trades
+                , min_end_bal_outflow_vol
+                , min_end_bal
+                , outflows_burden
+                , cash_reserve
+                , inflows_max_outflow
+                , avg_outflows_min_outflow
+                , avg_end_bal
+                , max_cash_change
+                , avg_bal_outflows
+                , max_outflow
+                , net_cash_vol
+                , outflows_burden_neg_net_cash_count 
                 )
     
     sql_file_path = 'sql/insert_model_inputs.sql'
