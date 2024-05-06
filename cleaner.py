@@ -49,6 +49,8 @@ def clean_input(data):
     data['-2_bal/outflow'].replace(np.inf, 1, inplace=True)
     data['inflows/active_trades'].replace(np.inf, 1, inplace=True)
 
+    data.fillna(0, inplace=True)
+    data.replace(np.inf, 1, inplace=True)
 
     data = data[['age_of_biz', '-1_end_bal', 'min_outflow', 'cb_trades_active',
        'avg_bal/outflows*cb_inquiries_l12m', 'inflows/active_trades',
