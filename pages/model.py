@@ -1,11 +1,18 @@
 import pandas as pd
 import streamlit as st
 import joblib
+import pickle
+import shap
+import os
+from streamlit_shap import st_shap
 import db
 from st_pages import show_pages_from_config
 import cleaner
 
 show_pages_from_config()
+
+X = pd.read_csv(os.getcwd() + '\\data\\data-20240510.csv', index_col=0)
+X = cleaner.clean_input(X)
 
 model = joblib.load('models/init_uw-20240501.pkl')
 
@@ -97,6 +104,13 @@ if st.button('Calculate'):
     # db.connect_to_cockroach()
 
     prediction = model.predict_proba(input_data)[0][1]
+
+    def model_predict_proba(data):
+        return model.predict_proba(data)[:, 1]
+    
+    explainer = shap.KernelExplainer(model_predict_proba, X, feature_names=input_data.columns)
+    shap_values = explainer(input_data)
+    st_shap(shap.waterfall_plot(shap_values[0]), width=1200, height=400)
     
     # sql_file_path = 'sql/insert_model_scores.sql'
     # data_tuple = (
