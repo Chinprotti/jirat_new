@@ -10,7 +10,7 @@ import cleaner
 
 show_pages_from_config()
 
-X = pd.read_csv(os.getcwd() + '/data/data-20240510.csv', index_col=0)
+X = pd.read_csv('/data/data-20240510.csv', index_col=0)
 X = cleaner.clean_input(X)
 
 model = joblib.load('models/init_uw-20240501.pkl')
