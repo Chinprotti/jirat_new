@@ -1,5 +1,6 @@
 xgboost
 numpy
+matplotlib
 postgres
 pandas
 joblib
