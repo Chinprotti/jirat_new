@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import joblib
-import pickle
 import shap
 import os
 from streamlit_shap import st_shap
