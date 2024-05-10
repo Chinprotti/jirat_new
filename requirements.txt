@@ -10,4 +10,4 @@ st-pages
 psycopg2-binary
 pyyaml
 shap
-streamlit_shap
+streamlit-shap
