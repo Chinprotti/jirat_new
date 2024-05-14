@@ -20,7 +20,7 @@ st.markdown('Enter Inputs Below\n\n')
 
 company_name = st.text_input('Company Name')
 company_id = st.text_input('Jeeves Company ID')
-testing_co = st.selectbox('Test or Actual Score',('Test', 'Actual'))
+testing_co = st.selectbox('Test or Actual Score',('','Test', 'Actual'))
 st.markdown('\n\n')
 
 st.markdown('\n\nGeneral Business Info\n\n')
