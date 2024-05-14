@@ -20,6 +20,7 @@ st.markdown('Enter Inputs Below\n\n')
 
 company_name = st.text_input('Company Name')
 company_id = st.text_input('Jeeves Company ID')
+testing_co = st.text_input('Test Score or Actual Score')
 st.markdown('\n\n')
 
 st.markdown('\n\nGeneral Business Info\n\n')
@@ -78,6 +79,7 @@ if st.button('Calculate'):
     data_tuple = (
                 company_name
                 , int(company_id)
+                , testing_co
                 , input_data['age_of_biz']
                 , input_data['-1_end_bal']
                 , input_data['min_outflow']
