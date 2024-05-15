@@ -2,7 +2,6 @@ import pandas as pd
 import streamlit as st
 import joblib
 import shap
-import os
 from streamlit_shap import st_shap
 import db
 from st_pages import show_pages_from_config
@@ -20,7 +19,7 @@ st.markdown('Enter Inputs Below\n\n')
 
 company_name = st.text_input('Company Name')
 company_id = st.text_input('Jeeves Company ID')
-testing_co = st.selectbox('Test or Actual Score',('','Test', 'Actual'))
+testing_co = st.selectbox('Is Test',('', True, False))
 st.markdown('\n\n')
 
 st.markdown('\n\nGeneral Business Info\n\n')
@@ -64,7 +63,6 @@ data = [
 
 st.info(sum(data))
 
-
 #button handling
 if st.button('Calculate'):
     data = pd.DataFrame(data).T
@@ -99,10 +97,51 @@ if st.button('Calculate'):
                 , input_data['net_cash_vol']
                 , input_data['outflows_burden*neg_net_cash_count']
                 )
-    # sql_file_path = 'sql/insert_model_inputs.sql'
-    # st.info(data_tuple)
-    # db.execute_sql_from_file(sql_file_path, data_tuple)
-    # db.connect_to_cockroach()
+        
+    sql_file_path = 'sql/insert_raw_inputs.sql'
+    sql_tuple = (company_id
+                 , age_of_biz
+                 , month_1_inflow
+                 , month_2_inflow
+                 , month_3_inflow
+                 , month_1_outflow
+                 , month_2_outflow
+                 , month_3_outflow
+                 , month_1_end_balance
+                 , month_2_end_balance
+                 , month_3_end_balance
+                 , month_1_net_cash_flow
+                 , month_2_net_cash_flow
+                 , month_3_net_cash_flow
+                 , cb_num_active_lines
+                 , cb_num_inquiries
+                 )
+    db.execute_sql_from_file(sql_file_path, sql_tuple)    
+    
+    sql_file_path = 'sql/insert_model_inputs.sql'
+    sql_tuple = (company_name
+                 , company_id
+                 , testing_co
+                 , input_data['age_of_biz'][0]
+                 , input_data['-1_end_bal'][0]
+                 , input_data['min_outflow'][0]
+                 , input_data['cb_trades_active'][0]
+                 , input_data['avg_bal/outflows*cb_inquiries_l12m'][0]
+                 , input_data['inflows/active_trades'][0]
+                 , input_data['min_end_bal*outflow_vol'][0]
+                 , input_data['min_end_bal'][0]
+                 , input_data['outflows_burden'][0]
+                 , input_data['cash_reserve'][0]
+                 , input_data['inflows/max_outflow'][0]
+                 , input_data['avg_outflows*min_outflow'][0]
+                 , input_data['avg_end_bal'][0]
+                 , input_data['max_cash_change'][0]
+                 , input_data['avg_bal/outflows'][0]
+                 , input_data['max_outflow'][0]
+                 , input_data['net_cash_vol'][0]
+                 , input_data['outflows_burden*neg_net_cash_count'][0]
+        )
+    db.execute_sql_from_file(sql_file_path, sql_tuple)
 
     prediction = model.predict_proba(input_data)[0][1]
 
@@ -113,14 +152,11 @@ if st.button('Calculate'):
     shap_values = explainer(input_data)
     st_shap(shap.waterfall_plot(shap_values[0]), width=1200, height=400)
     
-    # sql_file_path = 'sql/insert_model_scores.sql'
-    # data_tuple = (
-    #     company_name
-    #     , int(company_id)
-    #     , float(prediction)
-        
-    # )
-    # db.execute_sql_from_file(sql_file_path, data_tuple)
-    st.info(f'V3 Score: {prediction}')
+    sql_file_path = 'sql/insert_model_scores.sql'
+    data_tuple = (
+        int(company_id)
+        , float(prediction)
+    )
+    db.execute_sql_from_file(sql_file_path, data_tuple)
 
-    #Add waterfall chart? 
+    st.info(f'V3 Score: {prediction}')

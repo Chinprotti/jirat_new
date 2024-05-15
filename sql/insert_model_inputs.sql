@@ -1,26 +1,25 @@
-INSERT INTO public.model_inputs (
-    company_name,
-    jeeves_company_id,
-    age_of_biz,
-    sum_ending_bal_trend,
-    avg_sales_inflow_trend,
-    ending_bal_3m_2m_trend,
-    net_cash_flow_2m_1m_trend,
-    sum_sales_inflow_trend,
-    ending_bal_2m_1m_trend,
-    avg_ending_bal_trend,
-    net_cash_flow_3m_2m_trend,
-    avg_net_cash_flow_trend,
-    sales_inflow_3m_2m_trend,
-    sales_inflow_2m_1m_trend,
-    total_end_balance_over_outflows,
-    six_m_net_cash_flow_ratio,
-    adj_sales_volatility,
-    orig_sales_vol,
-    num_inquiries,
-    num_30_plus_lines,
-    num_repaid_lines,
-    num_active_lines 
+INSERT INTO public.v3_1_model_inputs (
+    company_name
+    , jeeves_company_id
+    , is_test
+    , age_of_business
+    , month_1_end_bal
+    , min_outflows
+    , cb_trades_active
+    , avg_bal_over_outflows_times_cb_inquiries_l12m
+    , inflows_over_active_trades
+    , min_end_bal_times_outflow_vol
+    , min_end_bal
+    , outflows_burden
+    , cash_reserve
+    , inflows_over_max_outflow
+    , avg_outflows_times_min_outflow
+    , avg_end_bal
+    , max_cash_change
+    , avg_bal_over_outflows
+    , max_outflow
+    , net_cash_vol
+    , outflows_burden_times_neg_net_cash_count
 ) VALUES (
-    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
 );
