@@ -1,7 +1,0 @@
-[[pages]]
-path = "main.py"
-name = "Home"
-
-[[pages]]
-path = "pages/model.py"
-name = "V3 Model Runner"
